@@ -1,4 +1,4 @@
-# Project Name
+# Turbo Hackaton RAG project
 
 A brief description of your project, what it does, and its purpose.
 
@@ -61,13 +61,21 @@ Include a link to a live demo or a GIF/screenshots of your project in action.
 1. Clone the repository:
 
    ```bash
-   git clone https://github.com/yourusername/yourproject.git
+   git clone https://git.codenrock.com/turboxakaton-reseniya-dlya-elektroenergetiki-na-baze-iskusstvennogo-intellekta-1268/cnrprod1728932997-team-81195/zagruzka-resheniya-6026.git
    ```
 
 ## Usage
 
+Use.
+
 ## Contributing
+
+Equal contribution from all team members.
 
 ## License
 
+No license provided.
+
 ## Acknowledgments
+
+Thanks.
