@@ -8,6 +8,8 @@
 *$py.class
 **/.DS_Store/**
 .DS_Store
+**/chromadb/**
+**/chroma.sqlite3/**
 
 # C extensions
 *.so
@@ -178,3 +180,4 @@ poetry.toml
 pyrightconfig.json
 
 # End of https://www.toptal.com/developers/gitignore/api/python
+chromadb/chroma.sqlite3
