@@ -8,7 +8,10 @@ from tqdm import tqdm
 import random
 from typing import List
 
-# Embedding function class
+# Define logging rules
+logging.basicConfig(level=logging.INFO, format='%(levelname)s: %(message)s')
+
+# Define embedding function class
 class MyEmbeddingFunction(EmbeddingFunction):
     def __init__(self, embedding_model: SentenceTransformer):
         self.embedding_model = embedding_model
@@ -28,9 +31,15 @@ query_texts: List[str] = ["LLM", "python", "object detection"]
 
 # Code
 if __name__ == "__main__":
-    logging.basicConfig(level=logging.INFO, format='%(levelname)s: %(message)s')
-    
     assert os.path.isfile(dataset_path)
+    assert batch_size > 0
+    assert len(query_texts) > 0
+    assert len(chromadb_path) > 0
+    assert len(sentence_transformer) > 0
+    assert len(collection_name) > 0
+    assert len(dataset_path) > 0
+    if not os.path.exists(chromadb_path):
+        os.makedirs(chromadb_path)
     
     logging.info(f"Reading dataset")
     dataset_df = pd.read_csv(dataset_path, header=0)
@@ -48,7 +57,7 @@ if __name__ == "__main__":
     embed_fn = MyEmbeddingFunction(embedding_model=embedding_model)
 
     logging.info(f"Creating collection")
-    collection = client.get_or_create_collection(name=collection_name, embedding_function=embed_fn)
+    collection = client.get_or_create_collection(name=collection_name, embedding_function=embed_fn, metadata={"hnsw:space":"cosine"})
     
     # Loop through batches and generate + store embeddings
     for i in tqdm(range(0, len(dataset_dict), batch_size)):
