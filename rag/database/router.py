@@ -20,11 +20,11 @@ class TextInput(BaseModel):
 @db_router.post("/add_text/")
 async def add_text(input: TextInput):
     try:
-        collection.add(
+        collection.upsert(
             documents=[
                 input.text
             ],
-            ids=["id1"]
+            ids=[str(hash(input.text))]
         )
         return {"message": "Text added successfully"}
     except Exception as e:

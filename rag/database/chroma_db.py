@@ -4,7 +4,9 @@ from models import embed_fn
 
 
 collection_name: str = f"test-collection"
-client = chromadb.Client()
+# client = chromadb.Client()
+
+client = chromadb.PersistentClient(path="/app/db")
 collection = client.get_or_create_collection(name=collection_name, embedding_function=embed_fn, metadata={"hnsw:space":"cosine"})
 #create db
 
