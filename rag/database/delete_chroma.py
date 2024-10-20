@@ -1,4 +1,4 @@
-import chromadb
+import chroma_db
 import os
 import shutil
 import logging
@@ -16,7 +16,7 @@ if __name__ == "__main__":
     assert len(collection_name) > 0
     
     if os.path.exists(chromadb_path):
-        client = chromadb.PersistentClient(path=chromadb_path)
+        client = chroma_db.PersistentClient(path=chromadb_path)
         collection = client.get_collection(name=collection_name)
         collection.count()
         choice = input("Do you really want to delete the whole database? (y/n): ")
