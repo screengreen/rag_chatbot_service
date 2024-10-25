@@ -20,7 +20,8 @@ class TextInput(BaseModel):
 async def chat(prompt):
     try:
         llm = llmloader.get_llm()
-        llm_output = llm(prompt)
+        # llm_output = llm(prompt)
+        llm_output = 'you ve done it!'
 
         return {"ai_response": llm_output}
     except Exception as e:
