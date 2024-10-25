@@ -16,8 +16,10 @@ RUN poetry config virtualenvs.create false && poetry install
 COPY . .
 
 # Открываем порт 8000
-EXPOSE 8005
+EXPOSE 8501
 
+
+HEALTHCHECK CMD curl --fail http://localhost:8501/_stcore/health
 
 # Run app.py when the container launches
-CMD ["streamlit", "run", "streamlit.py", "server.port", "8005"]
+ENTRYPOINT ["streamlit", "run", "streamlit.py", "--server.port=8501", "--server.address=0.0.0.0"]

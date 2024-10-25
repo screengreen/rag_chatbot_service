@@ -2,7 +2,7 @@ import streamlit as st
 import requests
 
 def send_to_server(prompt: str, history: dict):
-    url = "http://0.0.0.0:8002/chat/chat/"
+    url = "http://backend:8002/chat/chat/"
     payload = {
         "text": prompt, 
         'history': history
