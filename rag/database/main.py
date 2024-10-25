@@ -15,15 +15,18 @@ DEFAULT_COLLECTION_NAME: str = "rag_collection"  # Заменить на что 
 DEFAULT_DATASET_PATH: str = "../../../ml-potw-10232023.csv"
 DEFAULT_DOCS_DIR: str = ...
 
-# Function to check if DEFAULT_DOCS are in the DB
+# Define manager and collection
+manager = ChromaDBManager(db_path=DEFAULT_DB_PATH)
+collection = manager.get_or_create_collection(collection_name=DEFAULT_COLLECTION_NAME,
+                                           embedding_model=DEFAULT_EMBEDDING_MODEL)
 
 # Define lifespan function
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # Define database manager and client
-    manager = ChromaDBManager(db_path=DEFAULT_DB_PATH)
-    collection = manager.get_or_create_collection(collection_name=DEFAULT_COLLECTION_NAME,
-                                           embedding_model=DEFAULT_EMBEDDING_MODEL)
+    # manager = ChromaDBManager(db_path=DEFAULT_DB_PATH)
+    # collection = manager.get_or_create_collection(collection_name=DEFAULT_COLLECTION_NAME,
+    #                                        embedding_model=DEFAULT_EMBEDDING_MODEL)
     # Client and collection are already created
     # You only need to use them with existing manager
     # 1. Check if client is available
@@ -34,11 +37,11 @@ async def lifespan(app: FastAPI):
     logging.info(f"{'TRUE' if DEFAULT_COLLECTION_NAME in manager.list_collections() else 'FALSE'}.")
     # 2. Insert base docs if they are not inserted
     logging.info("Checking default docs")
-    default_docs_present = ...
-    if default_docs_present:
-        logging.info("Default docs are already in the database")
-    else:
-        ...
+    # default_docs_present = ...
+    # if default_docs_present:
+    #     logging.info("Default docs are already in the database")
+    # else:
+    #     ...
         # Some function to read the DEFAULT_DOCS
         # When you have List[TextInput] of DEFAULT_DOCS
         # default_documents = ...
@@ -57,5 +60,4 @@ app = FastAPI(lifespan=lifespan)
 
 if __name__ == "__main__":
     import uvicorn
-
-    uvicorn.run("_main:app", host="0.0.0.0", port=8003, reload=True)
+    uvicorn.run("main:app", host="0.0.0.0", port=8003, reload=True)

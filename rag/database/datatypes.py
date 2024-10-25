@@ -1,8 +1,10 @@
 from dataclasses import dataclass
+from typing import Optional
 
 @dataclass
 class TextInput:
     text: str
-    language: str
-    origin: str
-    default: bool
+    language: Optional[str] = None
+    origin: Optional[str] = None
+    default: Optional[bool] = None
+    document: Optional[str] = None
