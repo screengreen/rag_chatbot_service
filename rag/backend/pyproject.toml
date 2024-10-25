@@ -13,6 +13,8 @@ fastapi = "^0.115.3"
 transformers = "^4.46.0"
 torch = "^2.5.0"
 uvicorn = "^0.32.0"
+websockets = "^13.1"
+python-multipart = "^0.0.12"
 
 
 [build-system]

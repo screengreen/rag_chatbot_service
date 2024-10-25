@@ -6,7 +6,10 @@ from langchain_core.output_parsers import StrOutputParser
 from langchain_core.runnables import RunnablePassthrough
 from langchain import PromptTemplate
 import httpx
+from fastapi import FastAPI, WebSocket
 import asyncio
+from typing import Dict
+from typing import List
 
 llm_router = APIRouter(
     prefix='/chat',
@@ -75,19 +78,54 @@ async def get_llm_responce(prompt):
         response.raise_for_status()
 
 
+def parse_conversation(conversation):
+    formatted_conversation = []
+
+    for index, message in conversation.items():
+        role = message['role']
+        content = message['content']
+
+        if role == 'user':
+            formatted_conversation.append(f"user: {content}")
+        elif role == 'assistant':
+            formatted_conversation.append(f"ai: {content}")
+
+    return "\n".join(formatted_conversation)
+
+class ConnectionManager:
+    def __init__(self):
+        self.active_connections: List[WebSocket] = []
+
+    async def connect(self, websocket: WebSocket):
+        await websocket.accept()
+        self.active_connections.append(websocket)
+
+    def disconnect(self, websocket: WebSocket):
+        self.active_connections.remove(websocket)
+
+    async def broadcast(self, message: str):
+        for connection in self.active_connections:
+            await connection.send_text(message)
+
+
+class ChatRequest(BaseModel):
+    text: str
+    history: Dict[int, dict]
 
 
 # Маршрут для добавления текста
-@llm_router.get("/chat/")
-async def chat(human_input):
+@llm_router.post("/chat")
+async def chat(request: ChatRequest):
     try:
-        memory = ConversationBufferMemory()
+        formatted_output = parse_conversation(request.history)
+        human_input = request.text
+        # memory = ConversationBufferMemory()
         context = await get_chromfdb_documents(human_input, 2)
-        make_callable(memory.load_memory_variables({})['history'])
         
         rag_chain = (
             {"context": make_callable(context), 
-                'history': make_callable(memory.load_memory_variables({})['history']),
+                # 'history': make_callable(memory.load_memory_variables({})['history']),
+                'history': make_callable(formatted_output),
                 "human_input": RunnablePassthrough()}
             | prompt
             | get_llm_responce
@@ -95,22 +133,34 @@ async def chat(human_input):
             )
         
         prompt_filled = prompt.format(**{"context": context, 
-                                            'history':memory.load_memory_variables({})['history'], 
+                                            'history':formatted_output, 
                                             "human_input":human_input})
         
         logging.info(f'PROMT: {prompt_filled}')
 
     
         chain_responce = await rag_chain.ainvoke(human_input)
-        if not isinstance(chain_responce, str):
-            print(chain_responce)
-            print(type(chain_responce))
-            raise ValueError("chain_responce is not a string")
         ai_response = chain_responce.replace(prompt_filled, '')
 
-        memory.save_context({"input": human_input}, {"output": ai_response})
+        # memory.save_context({"input": human_input}, {"output": ai_response})
 
         
-        return {"ai_response": ai_response}
+        return {"ai_response": f'i got your input {human_input},context: {context}, ai:{ai_response}'}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+
+
+
+
+
+# manager = ConnectionManager()
+
+
+# @llm_router.websocket("/ws/{client_id}")
+# async def websocket_endpoint(websocket: WebSocket, client_id: str):
+#     await websocket.accept()
+#     await websocket.send_text(f"Hello, Client {client_id}")
+#     while True:
+#         data = await websocket.receive_text()
+#         await websocket.send_text(f"Message from {client_id}: {data}")
