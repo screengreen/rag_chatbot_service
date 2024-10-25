@@ -1,12 +1,11 @@
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
-from models import EmbModelLoader
-import os
-from chroma_db import collection
+from models import llmloader
 
 
 
-db_router = APIRouter(
+
+llm_router = APIRouter(
     prefix='/llm',
     tags=['llm']
 )
@@ -17,10 +16,12 @@ class TextInput(BaseModel):
 
 
 # Маршрут для добавления текста
-@db_router.post("/get_response/")
-async def add_text(input: TextInput):
+@llm_router.get("/responce/")
+async def chat(prompt):
     try:
-        
-        return {"message": "Text added successfully"}
+        llm = llmloader.get_llm()
+        llm_output = llm(prompt)
+
+        return {"ai_response": llm_output}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

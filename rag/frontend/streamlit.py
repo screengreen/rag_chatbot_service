@@ -2,7 +2,7 @@ import streamlit as st
 
 def main():
 
-    st.write("На этой странице описаны найденные закономерности в dddddданных")
+    st.write("На этой странице описаны найденные закономерности в данных")
 
     st.title("Echo Bot")
 
