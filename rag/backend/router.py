@@ -43,7 +43,7 @@ prompt = PromptTemplate(
 
 
 async def get_chromadb_responce(text: str, top_k: int = 2):
-    url = "http://0.0.0.0:8003/db/find_closest/"
+    url = "http://chromadb:8003/db/find_closest/"
     payload = {
         "text": text,
         "top_k": top_k
@@ -65,7 +65,7 @@ async def get_chromfdb_documents(text, top_k) -> str:
     return result
 
 async def get_llm_responce(prompt):
-    url = "http://0.0.0.0:8001/llm/responce/"
+    url = "http://model:8001/llm/responce/"
     params = {"prompt": prompt}
 
     async with httpx.AsyncClient() as client:

@@ -15,9 +15,5 @@ RUN poetry config virtualenvs.create false && poetry install
 # Copy the rest of the application code
 COPY . .
 
-# Открываем порт 8000
-EXPOSE 8001
-
-
 # Run app.py when the container launches
 CMD ["python3", "main.py"]

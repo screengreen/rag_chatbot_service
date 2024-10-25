@@ -1,0 +1,38 @@
+version: "3"
+
+services:
+  backend:
+    build: backend/
+
+    ports:
+      - 8002:8002
+    
+    depends_on:
+      - chromadb
+      - llm
+  
+  frontend:
+    build: frontend/
+    ports:
+      - 8501:8501
+    
+    depends_on:
+      - backend
+      - chromadb
+      - llm
+
+  chromadb:
+    build: chromadb/
+    ports:
+      - 8003:8003
+    volumes:
+      - chromadb_data:/app/db
+
+  llm:
+    build: model/
+    ports:
+      - 8001:8001
+
+volumes:
+  chromadb_data:
+    driver: foobar
