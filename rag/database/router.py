@@ -19,7 +19,7 @@ async def add_text(input: TextInput):
         raise HTTPException(status_code=500, detail=str(e))
 
 
-# Маршрут для поиска ближайших векторов и текстов
+# Find similar text in the database
 @db_router.post("/find_closest/")
 async def find_closest(input: TextInput, n_results: int = 2):
     try:
